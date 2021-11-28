@@ -39,28 +39,32 @@ extern "C" int scanhash_credits(int gpu_id, int cpu_id, ton::HDataEnv H, const t
     abort();
   }
 
+  if (options.instant_hashes_computed) {
+    *options.instant_hashes_computed = throughput;
+  }
+
   uint32_t expired;
-  td::int64 i = 0, hashes_computed = 0;
-  td::Timestamp stat_at = td::Timestamp::now(), instant_stat_at = td::Timestamp::now();
+  td::int64 i = 0;
   for (; i < options.max_iterations;) {
     expired = (uint32_t)td::Clocks::system() + 900;
+    td::Timestamp instant_start_at = td::Timestamp::now();
     HashResult foundNonce = bitcredit_cpu_hash(gpu_id, cpu_id, options.gpu_threads, throughput, i, expired);
+    *options.instant_passed = td::Timestamp::now().at() - instant_start_at.at();
     if (foundNonce.nonce != UINT64_MAX && foundNonce.vcpu != UINT64_MAX) {
       pdata[0] = foundNonce.nonce;
       pdata[1] = foundNonce.vcpu;
       pdata[2] = expired;
       if (options.hashes_computed) {
-        *options.hashes_computed += i + foundNonce.nonce * foundNonce.vcpu;
+        *options.hashes_computed += foundNonce.nonce * foundNonce.vcpu;
+      }
+      if (options.instant_hashes_computed) {
+        *options.instant_hashes_computed = foundNonce.nonce * foundNonce.vcpu;
       }
       return 1;
     }
     i += throughput;
-    hashes_computed += throughput;
-    if (options.verbosity >= 2 && stat_at.is_in_past()) {
-      ton::Miner::print_stats(options.start_at, i, instant_stat_at, hashes_computed);
-      stat_at = stat_at.in(5);
-      instant_stat_at = td::Timestamp::now();
-      hashes_computed = 0;
+    if (options.hashes_computed) {
+      *options.hashes_computed += throughput;
     }
     if (options.token_) {
       break;
