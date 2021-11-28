@@ -42,7 +42,9 @@ jobs:
       - uses: Jimver/cuda-toolkit@v0.2.4
         id: cuda-toolkit
         with:
-            cuda: '11.3.0'
+            method: 'network'
+            sub-packages: '["nvcc", "visual_studio_integration"]'
+            cuda: '11.3.1'
 
       - name: Show nvidia cuda toolkit version
         run: |
