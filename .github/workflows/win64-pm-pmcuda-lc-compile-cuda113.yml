@@ -1,4 +1,4 @@
-name: win64-pm-pmcuda-lc-compile.yml
+name: win64-pm-pmcuda-lc-compile-cuda113.yml
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
       - uses: Jimver/cuda-toolkit@v0.2.4
         id: cuda-toolkit
         with:
-            cuda: '11.4.0'
+            cuda: '11.3.0'
 
       - name: Show nvidia cuda toolkit version
         run: |
