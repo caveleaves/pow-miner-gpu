@@ -1,6 +1,7 @@
 name: win64-pm-pmocl-lc-compile.yml
 
 on:
+  workflow_dispatch:
   push:
     tags:
     - '*'
