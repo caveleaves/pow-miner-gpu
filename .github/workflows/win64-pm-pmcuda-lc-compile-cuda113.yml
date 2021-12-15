@@ -1,6 +1,7 @@
 name: win64-pm-pmcuda-lc-compile-cuda113.yml
 
 on:
+  workflow_dispatch:
   push:
     tags:
     - '*'
