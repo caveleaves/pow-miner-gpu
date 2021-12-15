@@ -74,5 +74,8 @@ extern "C" int scanhash_credits(int gpu_id, int cpu_id, ton::HDataEnv H, const t
       break;
     }
   }
+  if (options.hashes_computed) {
+    *options.hashes_computed += i;
+  }
   return 0;
 }
